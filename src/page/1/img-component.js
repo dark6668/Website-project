@@ -7,7 +7,7 @@ export default function Img(props) {
       id: PropTypes.number.isRequired,
       img: PropTypes.string.isRequired,
       name: PropTypes.string.isRequired,
-      rating: PropTypes.string.isRequired,
+      rating: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
       date: PropTypes.string.isRequired,
       cost: PropTypes.string.isRequired,
       openSpots: PropTypes.number.isRequired,

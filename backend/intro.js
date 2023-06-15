@@ -199,7 +199,7 @@ app.post('/airbnb-info', (req, res) => {
               res.json(false);
             }
           }
-        });
+        }); 
       }
     });
   }
@@ -236,7 +236,6 @@ app.post('/book', (req, res) => {
     if (err) {
       console.log(err);
     } else {
-      console.log('good');
       if (req.body.book === false) {
         let update = `UPDATE airbnb_data SET open_spots = open_spots + 1 WHERE name ='${req.body.name}';`;
         db.query(update, (err) => {

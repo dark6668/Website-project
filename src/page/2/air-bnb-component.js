@@ -143,7 +143,9 @@ export default function AirBnbComponent(props) {
           </>
         )}
       </h1>
-      <button onClick={bookvalue}>{order != 1 ? 'Book' : 'Cancel book'}</button>
+      <div>
+        <button onClick={bookvalue}>{order != 1 ? 'Book' : 'Cancel book'}</button>
+      </div>
     </div>
   );
 }
