@@ -37,26 +37,26 @@ app.get('/user-list', () => {
   });
 });
 app.post('/user-list2', (req, res) => {
+  let { userName, password } = req.body;
   let select = 'SELECT * FROM website;';
   db.query(select, (err, result) => {
     if (err) {
       console.log(err);
     } else {
       let matchIndex = result.findIndex((obj) => {
-        return (
-          bcrypt.compareSync(req.body.password, obj.password) && obj.user_name === req.body.userName
-        );
+        return bcrypt.compareSync(password, obj.password) && obj.user_name === userName;
       });
-      if (matchIndex != -1) {
-        res.send(result[matchIndex]);
+      if (matchIndex !== -1) {
+        res.status(200).send(result[matchIndex]);
       } else {
-        res.send({ check: false });
+        res.status(500);
       }
     }
   });
 });
 
 app.post('/user-list', async (req, res) => {
+  let { signUpUser, password, gender } = req.body;
   let select = 'SELECT * FROM website;';
   db.query(select, (err, result) => {
     if (err) {
@@ -64,17 +64,17 @@ app.post('/user-list', async (req, res) => {
     } else {
       let check = result.find(
         (info) =>
-          (info.user_name === req.body.signUpUser && info.password === req.body.password) ||
-          (info.user_name === req.body.signUpUser && info.gender === req.body.gender)
+          (info.user_name === signUpUser && info.password === password) ||
+          (info.user_name === signUpUser && info.gender === gender)
       );
       if (check === undefined) {
         let cookie = uuid.v4();
-        bcrypt.hash(req.body.signUpPassword, 10, (err, hashPassword) => {
+        bcrypt.hash(password, 10, (err, hashPassword) => {
           if (err) {
             console.log(err);
           } else {
-            req.body.signUpPassword = hashPassword;
-            let insert = `INSERT INTO website(user_name, gender, password,cookie) VALUES('${req.body.signUpUser}','${req.body.gender}','${req.body.signUpPassword}','${cookie}')`;
+            signUpUser = hashPassword;
+            let insert = `INSERT INTO website(user_name, gender, password,cookie) VALUES('${signUpUser}','${gender}','${password}','${req.body.cookie}')`;
 
             db.query(insert, (err) => {
               if (err) {
@@ -106,58 +106,51 @@ app.post('/user-list', async (req, res) => {
                 });
               }
             });
-            res.sendStatus(201);
+            res.status(201);
           }
         });
       } else {
-        res.send('Username already in use');
+        res.status(500).send('Username already in use');
       }
     }
   });
 });
 
-app.post('/user', (req, res) => {
-  let select = `Select * FROM website WHERE cookie = '${req.body.cookie}'`;
-  db.query(select, (err, result) => {
-    if (err) {
-      console.log(err);
-    } else {
-      res.send(result);
-    }
-  });
-});
 app.get('/data', (req, res) => {
   let select = `SELECT * FROM airbnb_data`;
   db.query(select, (err, result) => {
     if (err) {
       console.log(err);
+      res.status(500).send();
     } else {
-      res.send(result);
+      res.status(200).send(result);
     }
   });
 });
 app.post('/data-user', (req, res) => {
-  let select = `SELECT * FROM airbnb_data WHERE cookie = '${req.body.cookie}'`;
+  let { cookie } = req.body;
+  let select = `SELECT * FROM airbnb_data WHERE cookie = '${cookie}'`;
   db.query(select, (err, result) => {
     if (err) {
       console.log(err);
+      res.status(500).send();
     } else {
-      res.send(result);
+      res.status(200).send(result);
     }
   });
 });
-
 app.post('/data', (req, res) => {
+  let { cookie, value, id } = req.body;
   if (req.body.value === true) {
     req.body.value = 1;
   } else {
     req.body.value = 0;
   }
-  let select = `UPDATE  airbnb_data SET liked = ${req.body.value} WHERE name = '${req.body.id}' AND cookie = '${req.body.cookie}' `;
+  let select = `UPDATE  airbnb_data SET liked = ${value} WHERE name = '${id}' AND cookie = '${cookie}' `;
   db.query(select, (err) => {
     if (err) {
-      res.status(500).send();
       console.log(err);
+      res.status(500).send();
     } else {
       res.status(200).send();
     }
@@ -165,64 +158,67 @@ app.post('/data', (req, res) => {
 });
 
 app.post('/data-list', (req, res) => {
-  let select = `SELECT * FROM airbnb_data WHERE liked=1 AND cookie = '${req.body.cookie}'`;
+  let { cookie } = req.body;
+  let select = `SELECT * FROM airbnb_data WHERE liked=1 AND cookie = '${cookie}'`;
   db.query(select, (err, result) => {
     if (err) {
       console.log(err);
+      res.status(500).send();
     } else {
-      res.send(result);
+      res.status(200).send(result);
     }
   });
 });
 app.post('/airbnb-info', (req, res) => {
-  if (req.body.cookie === '') {
+  let { pathName, cookie } = req.body;
+  if (cookie === '') {
     res.sendStatus(500);
   } else {
-    let select = `SELECT id, img, name, rating, your_rating  ,date, cost, open_spots,Invited,liked FROM airbnb_data WHERE name = '${req.body.pathName}'  AND cookie = '${req.body.cookie}';`;
-    let select2 = `SELECT SUM(liked) FROM airbnb_data WHERE name = '${req.body.pathName}';`;
-    let list = [];
+    let select = `
+      SELECT 
+        id, img, name, rating, your_rating, date, cost, open_spots, Invited, liked,
+        (SELECT SUM(liked) FROM airbnb_data WHERE name = '${pathName}') AS totalLiked
+      FROM airbnb_data
+      WHERE name = '${pathName}' AND cookie = '${cookie}'`;
+
     db.query(select, (err, result) => {
       if (err) {
         console.log(err);
+        res.sendStatus(500);
       } else {
-        list.push(result[0]);
-        db.query(select2, (err, result) => {
-          if (err) {
-            console.log(err);
-          } else {
-            let sum = result[0];
-            if (sum['SUM(liked)'] != null || undefined) {
-              list[0].liked = parseInt(sum['SUM(liked)']);
-
-              res.json(list);
-            } else {
-              res.json(false);
-            }
-          }
-        }); 
+        if (result.length > 0) {
+          const row = result[0];
+          row.liked = parseInt(row.liked);
+          row.totalLiked = parseInt(row.totalLiked);
+          res.status(200).json([row]);
+        } else {
+          res.status(500).json(false);
+        }
       }
     });
   }
 });
 app.post('/rating', (req, res) => {
-  let update = `UPDATE airbnb_data SET your_rating = ${req.body.rating} WHERE cookie = '${req.body.cookie}' AND name = '${req.body.name}'`;
-  db.query(update, (err) => {
+  let { rating, cookie, name } = req.body;
+  let updateYourRating = `UPDATE airbnb_data SET your_rating = ${rating} WHERE cookie = '${cookie}' AND name = '${name}'`;
+  db.query(updateYourRating, (err) => {
     if (err) {
       console.log(err);
+      res.sendStatus(500);
     } else {
-      let update2 = `UPDATE airbnb_data
-    SET rating = (
-      SELECT avg_rating
-      FROM (
-        SELECT AVG(your_rating) AS avg_rating
-        FROM airbnb_data
-        WHERE name = '${req.body.name}'
-      ) AS subquery
-    )
-    WHERE name = '${req.body.name}';`;
-      db.query(update2, (err) => {
+      let updateAvgRating = `UPDATE airbnb_data AS a
+        INNER JOIN (
+          SELECT AVG(your_rating) AS avg_rating
+          FROM airbnb_data
+          WHERE name = '${name}'
+        ) AS subquery
+        ON a.name = '${name}'
+        SET a.rating = subquery.avg_rating;`;
+
+      db.query(updateAvgRating, (err) => {
         if (err) {
           console.log(err);
+          res.sendStatus(500);
         } else {
           res.sendStatus(200);
         }
@@ -231,26 +227,39 @@ app.post('/rating', (req, res) => {
   });
 });
 app.post('/book', (req, res) => {
-  let update = `UPDATE airbnb_data SET Invited = ${req.body.book} WHERE name = '${req.body.name}' AND cookie = '${req.body.cookie}'`;
+  let { book, name, cookie } = req.body;
+  let update = `UPDATE airbnb_data SET Invited = ${book} WHERE name = '${name}' AND cookie = '${cookie}'`;
   db.query(update, (err) => {
     if (err) {
       console.log(err);
     } else {
       if (req.body.book === false) {
-        let update = `UPDATE airbnb_data SET open_spots = open_spots + 1 WHERE name ='${req.body.name}';`;
+        let update = `UPDATE airbnb_data SET open_spots = open_spots + 1 WHERE name ='${name}';`;
         db.query(update, (err) => {
           if (err) {
             console.log(err);
-          } else res.sendStatus(200);
+          } else res.status(200).send('+');
         });
       } else if (req.body.book === true) {
-        let update = `UPDATE airbnb_data SET open_spots = open_spots - 1 WHERE name ='${req.body.name}';`;
+        let update = `UPDATE airbnb_data SET open_spots = open_spots - 1 WHERE name ='${name}';`;
         db.query(update, (err) => {
           if (err) {
             console.log(err);
-          } else res.sendStatus(200);
+          } else res.status(200).send('-');
         });
       }
+    }
+  });
+});
+
+app.post('/user', (req, res) => {
+  let { cookie } = req.body;
+  let select = `Select * FROM website WHERE cookie = '${cookie}'`;
+  db.query(select, (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.status(200).send(result);
     }
   });
 });

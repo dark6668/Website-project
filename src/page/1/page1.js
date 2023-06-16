@@ -4,6 +4,7 @@ import Img from './img-component';
 import AirbnbPage from '../2/Air-bnb-page';
 export default function HomePage() {
   if (document.cookie) {
+    console.log(document.cookie);
     let [listPlaces, setListPlace] = React.useState([]);
     let [userInfo, setUserInfo] = React.useState('');
     let [imgData, setImgData] = React.useState('');
@@ -117,6 +118,7 @@ export default function HomePage() {
           }
         });
         let info = await response.json();
+
         setUserInfo(info);
       } catch (err) {
         console.log(err);
