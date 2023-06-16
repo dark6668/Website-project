@@ -59,7 +59,9 @@ export default function AirBnbComponent(props) {
       body: JSON.stringify({
         book: order,
         cookie: document.cookie,
-        name: pathName
+        name: pathName,
+        free: props.Item.open_spots,
+        invited: props.Item.Invited
       }),
       headers: {
         'Content-type': 'application/json; charset=UTF-8'
@@ -144,8 +146,19 @@ export default function AirBnbComponent(props) {
         )}
       </h1>
       <div>
-        <button onClick={bookvalue}>{order != 1 ? 'Book' : 'Cancel book'}</button>
+        {props.Item.Invited === 1 && props.Item.open_spots === 0 ? (
+          <button onClick={bookvalue}>Cancel book</button>
+        ) : props.Item.open_spots === 0 ? (
+          <h1 style={{ color: 'red' }}>The place is not available</h1>
+        ) : (
+          <button onClick={bookvalue}>{props.Item.Invited != 1 ? 'Book' : 'Cancel book'}</button>
+        )}
       </div>
     </div>
   );
 }
+// props.Item.open_spots === 0 ? (
+//   <h1 style={{ color: 'red' }}>The place is not available</h1>
+// ) : (
+//   <button onClick={bookvalue}>{order > 0 ? 'Book' : 'Cancel book'}</button>
+// )}

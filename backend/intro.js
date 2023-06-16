@@ -227,25 +227,60 @@ app.post('/rating', (req, res) => {
   });
 });
 app.post('/book', (req, res) => {
-  let { book, name, cookie } = req.body;
+  let { book, name, cookie, free, invited } = req.body;
+
   let update = `UPDATE airbnb_data SET Invited = ${book} WHERE name = '${name}' AND cookie = '${cookie}'`;
   db.query(update, (err) => {
     if (err) {
       console.log(err);
     } else {
-      if (req.body.book === false) {
+      if (invited === 1 && free === 0) {
         let update = `UPDATE airbnb_data SET open_spots = open_spots + 1 WHERE name ='${name}';`;
         db.query(update, (err) => {
           if (err) {
             console.log(err);
-          } else res.status(200).send('+');
+          } else {
+            let update2 = `UPDATE airbnb_data SET invited = 0 WHERE cookie = '${cookie} AND name= ${name}';`;
+            db.query(update2, (err) => {
+              if (err) {
+                console.log(err);
+              } else {
+                res.status(200).send('+');
+              }
+            });
+          }
         });
-      } else if (req.body.book === true) {
-        let update = `UPDATE airbnb_data SET open_spots = open_spots - 1 WHERE name ='${name}';`;
+      } else if (req.body.book === false) {
+        let update = `UPDATE airbnb_data SET open_spots = open_spots +  1  WHERE name ='${name}';`;
         db.query(update, (err) => {
           if (err) {
             console.log(err);
-          } else res.status(200).send('-');
+          } else {
+            let update2 = `UPDATE airbnb_data SET invited = 0 WHERE cookie = '${cookie} AND name= ${name}';`;
+            db.query(update2, (err) => {
+              if (err) {
+                console.log(err);
+              } else {
+                res.status(200).send('+');
+              }
+            });
+          }
+        });
+      } else if (req.body.book === true) {
+        let update = `UPDATE airbnb_data SET open_spots = open_spots - 1  WHERE name ='${name}';`;
+        db.query(update, (err) => {
+          if (err) {
+            console.log(err);
+          } else {
+            let update2 = `UPDATE airbnb_data SET invited = 1 WHERE cookie = '${cookie} AND name= ${name}';`;
+            db.query(update2, (err) => {
+              if (err) {
+                console.log(err);
+              } else {
+                res.status(200).send('-');
+              }
+            });
+          }
         });
       }
     }
