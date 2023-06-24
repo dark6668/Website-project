@@ -2,10 +2,10 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "",
-  "main": "app.js",
+  "main": "login-info.js",
   "scripts": {
-    "start": " nodemon app",
-    "up": " nodemon intro",
+    "start": " nodemon login-info",
+    "up": " nodemon login-info",
     "test": "jest"
   },
   "devDependencies": {

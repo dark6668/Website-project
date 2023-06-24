@@ -23,7 +23,6 @@ export default function Login() {
         }
       });
       let name = await response.json();
-
       if (name.check === false) {
         alert('Username does not exist, please sign up ');
       } else {

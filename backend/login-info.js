@@ -49,7 +49,7 @@ app.post('/user-list2', (req, res) => {
       if (matchIndex !== -1) {
         res.status(200).send(result[matchIndex]);
       } else {
-        res.status(500);
+        res.status(200).send({ check: false });
       }
     }
   });
@@ -226,15 +226,15 @@ app.post('/rating', (req, res) => {
     }
   });
 });
-app.post('/book', (req, res) => {
-  let { book, name, cookie, free, invited } = req.body;
 
+app.post('/book', async (req, res) => {
+  let { book, name, cookie, free, invited } = req.body;
   let update = `UPDATE airbnb_data SET Invited = ${book} WHERE name = '${name}' AND cookie = '${cookie}'`;
   db.query(update, (err) => {
     if (err) {
       console.log(err);
     } else {
-      if (invited === 1 && free === 0) {
+      if (invited === 1 && free === 0 && book === false) {
         let update = `UPDATE airbnb_data SET open_spots = open_spots + 1 WHERE name ='${name}';`;
         db.query(update, (err) => {
           if (err) {
@@ -250,7 +250,7 @@ app.post('/book', (req, res) => {
             });
           }
         });
-      } else if (req.body.book === false) {
+      } else if (book === false) {
         let update = `UPDATE airbnb_data SET open_spots = open_spots +  1  WHERE name ='${name}';`;
         db.query(update, (err) => {
           if (err) {
@@ -266,7 +266,7 @@ app.post('/book', (req, res) => {
             });
           }
         });
-      } else if (req.body.book === true) {
+      } else if (book === true) {
         let update = `UPDATE airbnb_data SET open_spots = open_spots - 1  WHERE name ='${name}';`;
         db.query(update, (err) => {
           if (err) {

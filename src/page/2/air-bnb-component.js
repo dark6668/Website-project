@@ -51,7 +51,6 @@ export default function AirBnbComponent(props) {
   let bookvalue = () => {
     setOrder((prevOrder) => !prevOrder);
   };
-
   let book = async () => {
     const pathName = window.location.pathname.split('/').pop();
     await fetch('http://localhost:9000/book', {
@@ -61,7 +60,7 @@ export default function AirBnbComponent(props) {
         cookie: document.cookie,
         name: pathName,
         free: props.Item.open_spots,
-        invited: props.Item.Invited
+        invited: order
       }),
       headers: {
         'Content-type': 'application/json; charset=UTF-8'
