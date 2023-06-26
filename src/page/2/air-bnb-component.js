@@ -16,8 +16,8 @@ export default function AirBnbComponent(props) {
     }),
     pageInfo: PropTypes.func
   };
-  let [rating, setRating] = React.useState({ yourRating: '' });
-  let [order, setOrder] = React.useState(props.Item.Invited);
+  const [rating, setRating] = React.useState({ yourRating: '' });
+  const [order, setOrder] = React.useState(props.Item.Invited);
   let handlerChangeRating = async (event) => {
     setRating(() => {
       return {

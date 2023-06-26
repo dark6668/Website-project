@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import AirbnbLogo from '../../Airbnb-Logo.png';
 export default function Header(props) {
-  let [menuHover, setMenuHover] = React.useState(false);
-  let [popup, setPopup] = React.useState(false);
+  const [menuHover, setMenuHover] = React.useState(false);
+  const [popup, setPopup] = React.useState(false);
   Header.propTypes = {
     userInfo: PropTypes.arrayOf(
       PropTypes.shape({
