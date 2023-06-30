@@ -1,9 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import AirbnbLogo from '../../Airbnb-Logo.png';
 export default function Header(props) {
-  let [menuHover, setMenuHover] = React.useState(false);
-  let [popup, setPopup] = React.useState(false);
+  const [menuHover, setMenuHover] = React.useState(false);
+  const [popup, setPopup] = React.useState(false);
   Header.propTypes = {
     userInfo: PropTypes.arrayOf(
       PropTypes.shape({
@@ -38,42 +37,35 @@ export default function Header(props) {
       console.log(err);
     }
   };
+  let userPages = (event) => {
+    window.open(`${location.protocol}//${location.host}/${event.currentTarget.textContent}`);
+  };
   return (
     <div>
       <div className="header-row">
-        <div className="img-header">
-          <img onClick={openHomePage} src={AirbnbLogo} />
+        <div className="icon-airbnb">
+          <img
+            onClick={openHomePage}
+            src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Airbnb_Logo_B%C3%A9lo.svg/512px-Airbnb_Logo_B%C3%A9lo.svg.png?20230603231949"
+          />
         </div>
         <div onClick={menu} className="flex-column">
-          <div className="flex-column-items"></div>
-          <div className="flex-column-items"></div>
-          <div className="flex-column-items"></div>
+          <div onClick={menu} className="flex-items">
+            <img
+              onClick={menu}
+              src="https://icon-library.com/images/hamburger-menu-icon-png/hamburger-menu-icon-png-10.jpg"
+            />
+          </div>
+          <div onClick={menu} className="user-name">
+            {props.userInfo[0] && props.userInfo[0].user_name}
+          </div>
         </div>
         <div
           style={menuHover ? { display: 'flex' } : { display: 'none' }}
           className="user-info-container">
-          <div onClick={menu} className="flex-column">
-            <div className="flex-column-items"></div>
-            <div className="flex-column-items"></div>
-            <div className="flex-column-items"></div>
-          </div>
-          <img
-            id="user-img"
-            src={
-              !props.userInfo
-                ? 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSc7ZIHfPTIXGBgil22j80qHIFyMFleSO1tOw&usqp=CAU'
-                : props.userInfo[0].gender === 'male'
-                ? 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQvHn4h1O_ciu6ZJFYud7adF82Hg1XSJFOfGw&usqp=CAU'
-                : props.userInfo[0].gender === 'female'
-                ? 'https://cdn3.iconfinder.com/data/icons/user-avatars-1/512/users-14-512.png'
-                : 'https://d1nhio0ox7pgb.cloudfront.net/_img/g_collection_png/standard/512x512/users5.png'
-            }
-          />
-          {props.userInfo ? props.userInfo[0].user_name : <div>User Name</div>}
-
-          <button onClick={listArray}>Your List</button>
-          <button onClick={props.exportData}>Export</button>
-          <button onClick={logOut}>Log Out</button>
+          <div onClick={userPages}>Wishlists</div>
+          <div onClick={userPages}>Trips</div>
+          <div onClick={logOut}>Log Out</div>
         </div>
       </div>
       {popup && (

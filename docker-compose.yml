@@ -1,0 +1,31 @@
+version: "3.8"
+services:
+  frontend:
+    build: .
+    stdin_open: true
+    ports:
+      - 3000:3000
+  web:
+    build: ./backend
+    volumes:
+      - ./backend:/app
+    environment:
+      - DATABASE_HOST=db
+      - DATABASE_USER=root
+      - DATABASE_PASSWORD=1S2U3S?
+      - DATABASE_NAME=node
+    depends_on:
+      - db
+    ports:
+      - 9000:9000
+  db:
+    image: mysql:8.0
+    environment:
+      - MYSQL_ROOT_PASSWORD=1S2U3S?
+      - MYSQL_DATABASE=node
+    volumes:
+      - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql:ro
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      timeout: 20s
+      retries: 10

@@ -32,28 +32,35 @@ export default function Img(props) {
     props.airbnbPage(props.item.name);
   };
   let imageStar = imgStar
-    ? 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Gold_Star.svg/1024px-Gold_Star.svg.png'
-    : 'https://cdn3.iconfinder.com/data/icons/sympletts-free-sampler/128/star-512.png';
+    ? 'https://png.pngtree.com/png-vector/20220428/ourmid/pngtree-smooth-glossy-heart-vector-file-ai-and-png-png-image_4557871.png'
+    : 'https://static.thenounproject.com/png/1742987-200.png';
   let styles = props.item.openSpots < 5 ? { color: 'red' } : { color: 'black' };
   return (
     <div className="containerContact">
       <img onClick={airbnbPage} className="imgContent" src={props.item.img} alt="Img" />
       {freePlaces && (
-        <div className="soldOut" style={styles}>
-          {freePlaces}
+        <div className="soldOUt-countainer">
+          <div className="soldOut" style={styles}>
+            {freePlaces}
+          </div>
+          <img id="heart" onClick={star} src={imageStar} alt="heart" />
         </div>
       )}
-      <section>
-        <div className="containerContactImg">
-          <img id="star" onClick={star} src={imageStar} alt="img-star" />
 
-          <div>{props.item.name} </div>
+      <div className="containerContactImg">
+        <h2>{props.item.name} </h2>
+        <h2 className="rating">
+          <img src="https://shorturl.at/cjzV4" alt="star" />
+          <div>{props.item.rating && props.item.rating}</div>
+        </h2>
+        <div>
+          <div style={{ color: 'gray' }}>{props.item.date.split('T')[0]}</div>
+          <div id="cost">
+            <h2> {props.item.cost.substring(0, props.item.cost.indexOf('n'))}</h2>
+            {props.item.cost.substring(props.item.cost.indexOf('n'))}
+          </div>
         </div>
-        <div className="containerContactInfo">
-          <div> {props.item.date.split('T')[0]} </div>
-          <div> {props.item.cost} </div>
-        </div>
-      </section>
+      </div>
     </div>
   );
 }

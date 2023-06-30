@@ -12,7 +12,6 @@ let db = mysql.createConnection({
   password: process.env.DATABASE_PASSWORD,
   database: process.env.DATABASE_NAME
 });
-
 db.connect((err) => {
   if (err) {
     console.log(err);
@@ -74,7 +73,7 @@ app.post('/user-list', async (req, res) => {
             console.log(err);
           } else {
             signUpUser = hashPassword;
-            let insert = `INSERT INTO website(user_name, gender, password,cookie) VALUES('${signUpUser}','${gender}','${password}','${req.body.cookie}')`;
+            let insert = `INSERT INTO website(user_name, gender,  password,cookie) VALUES('${signUpUser}','${gender}','${password}','${req.body.cookie}')`;
 
             db.query(insert, (err) => {
               if (err) {
@@ -290,6 +289,16 @@ app.post('/book', async (req, res) => {
 app.post('/user', (req, res) => {
   let { cookie } = req.body;
   let select = `Select * FROM website WHERE cookie = '${cookie}'`;
+  db.query(select, (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.status(200).send(result);
+    }
+  });
+});
+app.post('/Wishlists', (req, res) => {
+  let select = `SELECT img FROM airbnb_data WHERE cookie ='${req.body.cookie}' AND liked = 1`;
   db.query(select, (err, result) => {
     if (err) {
       console.log(err);

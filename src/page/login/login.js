@@ -1,17 +1,17 @@
 import React from 'react';
-import '../page1.css';
-import dog from '/home/david/repos/project/Website-project/src/dog.png';
+import '../style.css';
+import dog from './dog.png';
 import { useEffect } from 'react';
 export default function Login() {
-  let [checkbox, setCheckbox] = React.useState(false);
-  let [signUpcheckbox, setSignUpcheckbox] = React.useState(false);
-  let [signUpValue, setSignUpValue] = React.useState(false);
-  let [signUpInput, setSignUpInput] = React.useState({
+  const [checkbox, setCheckbox] = React.useState(false);
+  const [signUpcheckbox, setSignUpcheckbox] = React.useState(false);
+  const [signUpValue, setSignUpValue] = React.useState(false);
+  const [signUpInput, setSignUpInput] = React.useState({
     signUpUser: '',
     signUpPassword: '',
     gender: ''
   });
-  let [input, setInput] = React.useState({ userName: '', password: '' });
+  const [input, setInput] = React.useState({ userName: '', password: '' });
   let submit = async (event) => {
     event.preventDefault();
     try {
@@ -214,3 +214,5 @@ export default function Login() {
     </div>
   );
 }
+
+/// change the port in the link to 3030 becouse

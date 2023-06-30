@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import Login from './page/login/login';
 import HomePage from './page/1/page1';
 import AirbnbPage from './page/2/Air-bnb-page';
+import Wishlists from './page/1/Wishlists';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 const router = createBrowserRouter([
   {
@@ -17,6 +18,10 @@ const router = createBrowserRouter([
   {
     path: 'home-page/*',
     element: <AirbnbPage />
+  },
+  {
+    path: 'Wishlists',
+    element: <Wishlists />
   }
 ]);
 
