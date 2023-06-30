@@ -1,5 +1,5 @@
 import React from 'react';
-import '../page1.css';
+import '../style.css';
 import dog from './dog.png';
 import { useEffect } from 'react';
 export default function Login() {

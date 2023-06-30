@@ -127,7 +127,7 @@ export default function HomePage() {
         }
       });
       let info = await response.json();
-
+      info[0].user_name = info[0].user_name.charAt(0).toUpperCase();
       setUserInfo(info);
     } catch (err) {
       console.log(err);
@@ -136,16 +136,18 @@ export default function HomePage() {
   if (document.cookie) {
     return (
       <div>
-        <Header
-          exportData={exportData}
-          list={listPlaces}
-          userInfo={userInfo}
-          airbnbPage={airbnbPage}
-        />
+        <div>
+          <Header
+            exportData={exportData}
+            list={listPlaces}
+            userInfo={userInfo}
+            airbnbPage={airbnbPage}
+          />
+        </div>
         <div className="containerContainerContact">{img}</div>
       </div>
     );
   } else {
-    return;
+    return <div></div>;
   }
 }

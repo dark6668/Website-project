@@ -3,4 +3,4 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 ADD . .
-CMD  ["yarn", "up"]
+CMD  ["npm", "run", "up"]
