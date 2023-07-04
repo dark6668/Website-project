@@ -9,18 +9,21 @@ export default function WishlistsProps(prop) {
     )
   };
   return (
-    <div>
-      {prop.item ? (
-        <img src={prop.item} />
-      ) : (
-        <div>
-          <h1>No saves yet.</h1>
-          <p>
-            As you search, click the heart icon to save your favorite places and experiences to a
-            wishlist.
-          </p>
-        </div>
-      )}
+    <div className="yourWishlists">
+      <h1>Wishlists</h1>
+      <div className="yourLike">
+        {prop.item.length > 0 ? (
+          prop.item
+        ) : (
+          <div>
+            <h1>No saves yet.</h1>
+            <p>
+              As you search, click the heart icon to save your favorite places and experiences to a
+              wishlist.
+            </p>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

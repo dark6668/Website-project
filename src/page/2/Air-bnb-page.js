@@ -47,6 +47,7 @@ export default function AirbnbPage() {
         }
       });
       let info = await response.json();
+      info[0].user_name = info[0].user_name.charAt(0).toUpperCase();
       setUserInfo(info);
     } catch (err) {
       console.log(err);

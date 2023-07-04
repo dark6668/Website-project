@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 export default function Header(props) {
   const [menuHover, setMenuHover] = React.useState(false);
-  const [popup, setPopup] = React.useState(false);
   Header.propTypes = {
     userInfo: PropTypes.arrayOf(
       PropTypes.shape({
@@ -21,9 +20,6 @@ export default function Header(props) {
   let openHomePage = () => {
     window.close();
     window.open('http://localhost:3000/home-page');
-  };
-  let listArray = () => {
-    setPopup((popup) => !popup);
   };
   let logOut = async () => {
     let cookiePairs = document.cookie.split(';');
@@ -62,27 +58,13 @@ export default function Header(props) {
         </div>
         <div
           style={menuHover ? { display: 'flex' } : { display: 'none' }}
-          className="user-info-container">
+          className="user-info-container"
+        >
           <div onClick={userPages}>Wishlists</div>
           <div onClick={userPages}>Trips</div>
           <div onClick={logOut}>Log Out</div>
         </div>
       </div>
-      {popup && (
-        <div className="popup">
-          <div className="user-info-popup">
-            Hi {props.userInfo[0].user_name}
-            <div>this is your list:</div>
-            <section>
-              {props.list.length > 0 ? <div> {props.list} </div> : 'Nothing on the list'}
-            </section>
-          </div>
-          <div className="popup-x" onClick={listArray}>
-            X
-          </div>
-          <div className="popup-item"></div>
-        </div>
-      )}
     </div>
   );
 }

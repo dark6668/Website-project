@@ -9,6 +9,7 @@ export default function Wishlists() {
     if (document.cookie) {
       cookie();
       likedPlace();
+      imgList();
     }
     return;
   });
@@ -51,20 +52,21 @@ export default function Wishlists() {
   }
   function imgList() {
     let list = [];
-    list.push(likedPage);
-    console.log(list);
-    setArrayOfimg(() => {
-      return list.map((item, index) => {
-        return <WishlistsProps key={index} item={item.img} />;
-      });
-    });
+    console.log(likedPage.length);
+
+    for (let i = 0; i < likedPage.length; i++) {
+      console.log(i);
+      console.log(likedPage[i]);
+
+      list.push(<img src={likedPage[i].img} key={i} />);
+    }
+    setArrayOfimg(() => list);
   }
   if (document.cookie) {
     return (
       <div>
         <Header userInfo={userInfo} />
-        {arrayOfimg}
-        <button onClick={imgList}></button>
+        <WishlistsProps item={arrayOfimg} />
       </div>
     );
   } else {
